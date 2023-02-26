@@ -19,7 +19,7 @@ async function bootstrap() {
   // const commonService = app.get(CommonService);
   // await commonService.initCurrencies();
 
-  app.setGlobalPrefix('api');
+  // app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
