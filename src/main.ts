@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 // import * as session from 'express-session';
 // import { Client, ClientConfig } from 'pg';
-import * as passport from 'passport';
+// import * as passport from 'passport';
 
 // import { CommonService } from './common/common.service';
 
@@ -58,8 +58,8 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.use(passport.initialize());
-  app.use(passport.session());
+  // app.use(passport.initialize());
+  // app.use(passport.session());
 
   const options = new DocumentBuilder()
     .setTitle('Crazy Burger API')
