@@ -52,7 +52,8 @@ async function bootstrap() {
       saveUninitialized: false,
       cookie: {
         secure: false,
-        httpOnly: true
+        httpOnly: true,
+        sameSite: 'none'
       }
     }),
   );
