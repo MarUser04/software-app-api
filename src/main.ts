@@ -53,8 +53,7 @@ async function bootstrap() {
       cookie: {
         secure: true,
         httpOnly: true,
-        sameSite: 'none',
-        domain: 'crazy-burger-client.herokuapp.com'
+        sameSite: 'none'
       }
     }),
   );
