@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { Client, ClientConfig } from 'pg';
 import * as passport from 'passport';
@@ -14,7 +15,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const commonService = app.get(CommonService);
   await commonService.initCurrencies();
@@ -66,7 +67,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.set('trust proxy', 1);
+  app.set('trust proxy', true);
 
   const options = new DocumentBuilder()
     .setTitle('Crazy Burger API')
