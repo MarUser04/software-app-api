@@ -66,6 +66,8 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.set('trust proxy', 1);
+
   const options = new DocumentBuilder()
     .setTitle('Crazy Burger API')
     .setDescription('All application endpoints')
