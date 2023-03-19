@@ -53,7 +53,8 @@ async function bootstrap() {
       cookie: {
         secure: false,
         httpOnly: true,
-        sameSite: 'none'
+        sameSite: 'none',
+        domain: 'crazy-burger-apo.herokuapp.com'
       }
     }),
   );
