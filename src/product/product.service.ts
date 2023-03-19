@@ -120,6 +120,126 @@ export class ProductService {
     }
   }
 
+  async findOne(id: number): Promise<any> {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        items: {
+          item: true,
+        },
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID: ${id} not found`);
+    }
+
+    return this.mapPopulatedProduct(product);
+  }
+
+  async findOnePlain(id: number): Promise<Product> {
+    const product = await this.productRepository.findOneBy({ id });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID: ${id} not found`);
+    }
+
+    return product;
+  }
+
+  async findOnePopulated(id: number) {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        items: {
+          item: true,
+        },
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID: ${id} not found`);
+    }
+
+    return product;
+  }
+
+  async update(id: number, updateProductDto: UpdateProductDto): Promise<any> {
+    const { items: ingredients = [], price, name } = updateProductDto;
+
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        items: true,
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID: ${id} not found`);
+    }
+
+    const items = await Promise.all(
+      ingredients.map((ingredient) => this.itemService.findOne(ingredient.id)),
+    );
+
+    // Create Query Runner
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      product.price = price;
+      product.name = name;
+
+      for (const item of product.items) {
+        await queryRunner.manager.remove(item);
+      }
+
+      const productItems = [];
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const quantity = ingredients[i].quantity;
+
+        const productToItem = this.productToItemRepository.create({
+          item,
+          product,
+          quantity,
+        });
+        await queryRunner.manager.save(productToItem);
+
+        productItems.push(productToItem);
+      }
+
+      product.items = productItems;
+      await queryRunner.manager.save(product);
+
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+
+      return this.mapPopulatedProduct(product);
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+
+      this.handleDBExceptions(e);
+    }
+  }
+
+  async remove(id: number): Promise<void> {
+    const product = await this.findOne(id);
+    await this.productRepository.remove(product);
+  }
+
+  private mapPopulatedProduct = (product: any): Promise<any> => ({
+    ...product,
+    items: product.items.map((item) => ({
+      id: item.item.id,
+      quantity: item.quantity,
+    })),
+  });
+
   private handleDBExceptions(error: any) {
     if (error.code === '23505') throw new BadRequestException(error.detail);
 

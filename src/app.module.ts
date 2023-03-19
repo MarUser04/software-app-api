@@ -7,8 +7,10 @@ import { EnvConfiguration } from './config/env.config';
 import { JoiValidationSchema } from './config/joi.validation';
 
 // Modules
+import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { ItemModule } from './item/item.module';
+import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
 
 @Module({
@@ -32,8 +34,10 @@ import { ProductModule } from './product/product.module';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
     CommonModule,
     ItemModule,
+    OrderModule,
     ProductModule,
   ],
 })

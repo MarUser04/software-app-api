@@ -12,14 +12,18 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ItemService } from './item.service';
+import { OrderService } from './order.service';
 
-// Dto
-import { CreateItemDto, UpdateItemDto } from './dto';
-import { PaginationDto } from '../common/dto';
+// DTO
+import {
+  CreateOrderDto,
+  ListOrdersDto,
+  PayOrderDto,
+  UpdateOrderDto,
+} from './dto';
 
 // Entities
-import { Item } from './entities/item.entity';
+import { Order } from './entities/order.entity';
 
 // Guards
 import { Auth } from '../auth/decorators/auth.decorator';
@@ -27,17 +31,17 @@ import { Auth } from '../auth/decorators/auth.decorator';
 // Interfaces
 import { ValidRoles } from '../auth/interfaces';
 
-@ApiTags('Items')
-@Controller('item')
-export class ItemController {
-  constructor(private readonly itemService: ItemService) {}
+@ApiTags('Orders')
+@Controller('order')
+export class OrderController {
+  constructor(private readonly orderService: OrderService) {}
 
   @Post()
   @Auth(ValidRoles.ADMIN)
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Item was created',
-    type: Item,
+    description: 'Order was created',
+    type: Order,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -47,16 +51,16 @@ export class ItemController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal Server Error',
   })
-  create(@Body() createItemDto: CreateItemDto) {
-    return this.itemService.create(createItemDto);
+  create(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.create(createOrderDto);
   }
 
   @Get()
   @Auth()
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Items were listed',
-    type: [Item],
+    description: 'Orders were listed',
+    type: [Order],
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -66,16 +70,16 @@ export class ItemController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal Server Error',
   })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.itemService.findAll(paginationDto);
+  findAll(@Query() listOrdersDto: ListOrdersDto) {
+    return this.orderService.findAll(listOrdersDto);
   }
 
   @Get(':id')
   @Auth()
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Item was retrieved',
-    type: Item,
+    description: 'Order was retrieved',
+    type: Order,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -83,22 +87,22 @@ export class ItemController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Item Not Found',
+    description: 'Order Not Found',
   })
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal Server Error',
   })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.itemService.findOne(id);
+    return this.orderService.findOne(id);
   }
 
   @Patch(':id')
-  @Auth(ValidRoles.ADMIN, ValidRoles.COCINERO)
+  @Auth()
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Item was updated',
-    type: Item,
+    description: 'Order was updated',
+    type: Order,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -106,7 +110,7 @@ export class ItemController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Item Not Found',
+    description: 'Order Not Found',
   })
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -114,20 +118,46 @@ export class ItemController {
   })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateItemDto: UpdateItemDto,
+    @Body() updateOrderDto: UpdateOrderDto,
   ) {
-    return this.itemService.update(id, updateItemDto);
+    return this.orderService.update(id, updateOrderDto);
+  }
+
+  @Patch(':id/pay')
+  @Auth()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Order paid',
+    type: Order,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Order Not Found',
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Internal Server Error',
+  })
+  payOrder(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payOrderDto: PayOrderDto,
+  ) {
+    return this.orderService.payOrder(id, payOrderDto);
   }
 
   @Delete(':id')
   @Auth(ValidRoles.ADMIN)
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Item was deleted',
+    description: 'Order was deleted',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Item Not Found',
+    description: 'Order Not Found',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -138,6 +168,6 @@ export class ItemController {
     description: 'Internal Server Error',
   })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.itemService.remove(id);
+    return this.orderService.remove(id);
   }
 }

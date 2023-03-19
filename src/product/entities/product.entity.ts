@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { ProductToItem } from '../../common/entities/product-item.entity';
-// import { OrderDetail } from '../../common/entities/order-detail.entity';
+import { OrderDetail } from '../../common/entities/order-detail.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -42,6 +42,6 @@ export class Product {
   @OneToMany(() => ProductToItem, (productToItem) => productToItem.product)
   public items!: ProductToItem[];
 
-  // @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
-  // public orderDetails!: OrderDetail[];
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
+  public orderDetails!: OrderDetail[];
 }
