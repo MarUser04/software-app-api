@@ -3,9 +3,11 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import * as session from 'express-session';
 import { Client, ClientConfig } from 'pg';
 import * as passport from 'passport';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const session = require('express-session');
 
 import { CommonService } from './common/common.service';
 
