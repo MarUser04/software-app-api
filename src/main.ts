@@ -50,6 +50,10 @@ async function bootstrap() {
       secret: configService.get('SESSION_SECRET') || 'my-secret',
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        secure: false,
+        httpOnly: true
+      }
     }),
   );
 
