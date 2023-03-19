@@ -50,6 +50,11 @@ async function bootstrap() {
       secret: configService.get('sessionSecret'),
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        secure: true, // Asegúrate de que esta propiedad esté configurada en true si estás utilizando HTTPS en producción
+        httpOnly: true, // Esta propiedad impide que el JavaScript del lado del cliente tenga acceso a la cookie
+        maxAge: 3600000, // Define aquí el tiempo de vida de la cookie (en milisegundos)
+      },
     }),
   );
 
