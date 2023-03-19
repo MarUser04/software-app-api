@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { join } from 'path';
 
 // Config
 import { EnvConfiguration } from './config/env.config';
@@ -15,6 +18,9 @@ import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+    }),
     ConfigModule.forRoot({
       expandVariables: true,
       load: [EnvConfiguration],

@@ -49,7 +49,7 @@ async function bootstrap() {
       store,
       secret: configService.get('SESSION_SECRET') || 'my-secret',
       resave: false,
-      saveUninitialized: false
+      saveUninitialized: false,
     }),
   );
 
