@@ -11,4 +11,6 @@ export const JoiValidationSchema = Joi.object({
   DB_PASSWORD: Joi.string().required(),
   // Client
   CLIENT_URL: Joi.string().optional().default('http://localhost:8080'),
+  // Session
+  SESSION_SECRET: Joi.string().optional().default('my-session-secret'),
 });
