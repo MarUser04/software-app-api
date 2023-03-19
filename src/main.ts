@@ -4,11 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { Client, ClientConfig } from 'pg';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const passport = require('passport');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const session = require('express-session');
+import * as passport from 'passport';
+import * as session from 'express-session';
 
 import { CommonService } from './common/common.service';
 
