@@ -54,7 +54,7 @@ async function bootstrap() {
         secure: false,
         httpOnly: true,
         sameSite: 'none',
-        domain: 'crazy-burger-apo.herokuapp.com'
+        domain: 'crazy-burger-client.herokuapp.com'
       }
     }),
   );
