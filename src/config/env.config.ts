@@ -11,6 +11,4 @@ export const EnvConfiguration = () => ({
   dbPassword: process.env.DB_PASSWORD,
   // Client URL
   clientUrl: process.env.CLIENT_URL,
-  // Session
-  sessionSecret: process.env.SESSION_SECRET,
 });

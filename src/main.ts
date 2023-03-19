@@ -2,11 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { NestExpressApplication } from '@nestjs/platform-express';
 
+import * as session from 'express-session';
 import { Client, ClientConfig } from 'pg';
 import * as passport from 'passport';
-import * as session from 'express-session';
 
 import { CommonService } from './common/common.service';
 
@@ -15,7 +14,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const commonService = app.get(CommonService);
   await commonService.initCurrencies();
@@ -48,26 +47,19 @@ async function bootstrap() {
   app.use(
     session({
       store,
-      secret: configService.get('sessionSecret'),
+      secret: configService.get('SESSION_SECRET') || 'my-secret',
       resave: false,
       saveUninitialized: false,
-      cookie: {
-        secure: true, // Asegúrate de que esta propiedad esté configurada en true si estás utilizando HTTPS en producción
-        httpOnly: true, // Esta propiedad impide que el JavaScript del lado del cliente tenga acceso a la cookie
-        maxAge: 3600000, // Define aquí el tiempo de vida de la cookie (en milisegundos)
-      },
     }),
   );
 
   app.enableCors({
-    origin: true,
+    origin: configService.get('clientUrl'),
     credentials: true,
   });
 
   app.use(passport.initialize());
   app.use(passport.session());
-
-  app.set('trust proxy', true);
 
   const options = new DocumentBuilder()
     .setTitle('Crazy Burger API')
